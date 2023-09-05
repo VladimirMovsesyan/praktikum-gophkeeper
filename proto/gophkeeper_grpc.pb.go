@@ -40,7 +40,7 @@ type GophKeeperClient interface {
 	AddText(ctx context.Context, in *AddTextRequest, opts ...grpc.CallOption) (*AddTextResponse, error)
 	GetText(ctx context.Context, in *GetTextRequest, opts ...grpc.CallOption) (*GetTextResponse, error)
 	UpdateText(ctx context.Context, in *UpdateTextRequest, opts ...grpc.CallOption) (*UpdateTextResponse, error)
-	DeleteText(ctx context.Context, in *UpdateTextRequest, opts ...grpc.CallOption) (*DeleteTextResponse, error)
+	DeleteText(ctx context.Context, in *DeleteTextRequest, opts ...grpc.CallOption) (*DeleteTextResponse, error)
 }
 
 type gophKeeperClient struct {
@@ -114,7 +114,7 @@ func (c *gophKeeperClient) UpdateText(ctx context.Context, in *UpdateTextRequest
 	return out, nil
 }
 
-func (c *gophKeeperClient) DeleteText(ctx context.Context, in *UpdateTextRequest, opts ...grpc.CallOption) (*DeleteTextResponse, error) {
+func (c *gophKeeperClient) DeleteText(ctx context.Context, in *DeleteTextRequest, opts ...grpc.CallOption) (*DeleteTextResponse, error) {
 	out := new(DeleteTextResponse)
 	err := c.cc.Invoke(ctx, GophKeeper_DeleteText_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -134,7 +134,7 @@ type GophKeeperServer interface {
 	AddText(context.Context, *AddTextRequest) (*AddTextResponse, error)
 	GetText(context.Context, *GetTextRequest) (*GetTextResponse, error)
 	UpdateText(context.Context, *UpdateTextRequest) (*UpdateTextResponse, error)
-	DeleteText(context.Context, *UpdateTextRequest) (*DeleteTextResponse, error)
+	DeleteText(context.Context, *DeleteTextRequest) (*DeleteTextResponse, error)
 	mustEmbedUnimplementedGophKeeperServer()
 }
 
@@ -163,7 +163,7 @@ func (UnimplementedGophKeeperServer) GetText(context.Context, *GetTextRequest) (
 func (UnimplementedGophKeeperServer) UpdateText(context.Context, *UpdateTextRequest) (*UpdateTextResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateText not implemented")
 }
-func (UnimplementedGophKeeperServer) DeleteText(context.Context, *UpdateTextRequest) (*DeleteTextResponse, error) {
+func (UnimplementedGophKeeperServer) DeleteText(context.Context, *DeleteTextRequest) (*DeleteTextResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteText not implemented")
 }
 func (UnimplementedGophKeeperServer) mustEmbedUnimplementedGophKeeperServer() {}
@@ -306,7 +306,7 @@ func _GophKeeper_UpdateText_Handler(srv interface{}, ctx context.Context, dec fu
 }
 
 func _GophKeeper_DeleteText_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateTextRequest)
+	in := new(DeleteTextRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -318,7 +318,7 @@ func _GophKeeper_DeleteText_Handler(srv interface{}, ctx context.Context, dec fu
 		FullMethod: GophKeeper_DeleteText_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GophKeeperServer).DeleteText(ctx, req.(*UpdateTextRequest))
+		return srv.(GophKeeperServer).DeleteText(ctx, req.(*DeleteTextRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

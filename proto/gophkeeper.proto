@@ -88,5 +88,5 @@ service GophKeeper {
   rpc AddText(AddTextRequest) returns (AddTextResponse);
   rpc GetText(GetTextRequest) returns (GetTextResponse);
   rpc UpdateText(UpdateTextRequest) returns (UpdateTextResponse);
-  rpc DeleteText(UpdateTextRequest) returns (DeleteTextResponse);
+  rpc DeleteText(DeleteTextRequest) returns (DeleteTextResponse);
 }
