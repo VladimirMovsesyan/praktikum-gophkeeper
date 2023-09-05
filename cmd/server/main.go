@@ -12,7 +12,7 @@ import (
 
 var (
 	flAddress = flag.String("a", ":8080", "Server's address.") // RUN_ADDRESS
-	flDSN     = flag.String("d", "123", "Server's URI.")       // DSN
+	flDSN     = flag.String("d", "", "Server's URI.")          // DSN
 )
 
 func main() {

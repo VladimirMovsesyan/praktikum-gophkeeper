@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package gophkeeper;
+
+option go_package = "gophkeeper/proto";
+
+message Password {
+  string website = 1;
+  string login = 2;
+  string password = 3;
+}
+
+// Password
+message AddPasswordRequest {
+  Password password = 1;
+}
+
+message AddPasswordResponse {
+}
+
+message GetPasswordRequest {
+  string website = 1;
+}
+
+message GetPasswordResponse {
+  Password password = 1;
+}
+
+message UpdatePasswordRequest {
+  Password password = 1;
+}
+
+message UpdatePasswordResponse {
+}
+
+message DeletePasswordRequest {
+  Password password = 1;
+}
+
+message DeletePasswordResponse {
+}
+
+service GophKeeper {
+  rpc AddPassword(AddPasswordRequest) returns (AddPasswordResponse);
+  rpc GetPassword(GetPasswordRequest) returns (GetPasswordResponse);
+  rpc UpdatePassword(UpdatePasswordRequest) returns (UpdatePasswordResponse);
+  rpc DeletePassword(DeletePasswordRequest) returns (DeletePasswordResponse);
+}

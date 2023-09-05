@@ -1,7 +1,9 @@
 package configuration
 
 import (
+	"context"
 	"errors"
+	"github.com/jackc/pgx/v5"
 	"google.golang.org/grpc"
 	"os"
 	"praktikum-gophkeeper/pkg/service"
@@ -16,6 +18,7 @@ const (
 type Server struct {
 	Address string
 	DSN     string
+	DB      *pgx.Conn
 	Server  *grpc.Server
 }
 
@@ -30,12 +33,29 @@ func NewServer(flAddress, flDSN *string) (Server, error) {
 		return Server{}, err
 	}
 
+	conn, err := pgx.Connect(context.Background(), dsn)
+	if err != nil {
+		return Server{}, err
+	}
+
 	srv := grpc.NewServer()
-	pb.RegisterAuthorizationServer(srv, &service.AuthServer{})
+
+	authServer, err := service.NewAuthServer(conn)
+	if err != nil {
+		return Server{}, err
+	}
+	pb.RegisterAuthorizationServer(srv, authServer)
+
+	gophkeeperServer, err := service.NewGophKeeperServer(conn)
+	if err != nil {
+		return Server{}, err
+	}
+	pb.RegisterGophKeeperServer(srv, gophkeeperServer)
 
 	return Server{
 		Address: address,
 		DSN:     dsn,
+		DB:      conn,
 		Server:  srv,
 	}, nil
 }
