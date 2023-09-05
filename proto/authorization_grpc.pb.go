@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.3.0
 // - protoc             v4.23.4
-// source: proto/gophkeeper.proto
+// source: proto/authorization.proto
 
 package proto
 
@@ -142,5 +142,5 @@ var Authorization_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "proto/gophkeeper.proto",
+	Metadata: "proto/authorization.proto",
 }
