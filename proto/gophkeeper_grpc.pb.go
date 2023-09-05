@@ -23,6 +23,10 @@ const (
 	GophKeeper_GetPassword_FullMethodName    = "/gophkeeper.GophKeeper/GetPassword"
 	GophKeeper_UpdatePassword_FullMethodName = "/gophkeeper.GophKeeper/UpdatePassword"
 	GophKeeper_DeletePassword_FullMethodName = "/gophkeeper.GophKeeper/DeletePassword"
+	GophKeeper_AddText_FullMethodName        = "/gophkeeper.GophKeeper/AddText"
+	GophKeeper_GetText_FullMethodName        = "/gophkeeper.GophKeeper/GetText"
+	GophKeeper_UpdateText_FullMethodName     = "/gophkeeper.GophKeeper/UpdateText"
+	GophKeeper_DeleteText_FullMethodName     = "/gophkeeper.GophKeeper/DeleteText"
 )
 
 // GophKeeperClient is the client API for GophKeeper service.
@@ -33,6 +37,10 @@ type GophKeeperClient interface {
 	GetPassword(ctx context.Context, in *GetPasswordRequest, opts ...grpc.CallOption) (*GetPasswordResponse, error)
 	UpdatePassword(ctx context.Context, in *UpdatePasswordRequest, opts ...grpc.CallOption) (*UpdatePasswordResponse, error)
 	DeletePassword(ctx context.Context, in *DeletePasswordRequest, opts ...grpc.CallOption) (*DeletePasswordResponse, error)
+	AddText(ctx context.Context, in *AddTextRequest, opts ...grpc.CallOption) (*AddTextResponse, error)
+	GetText(ctx context.Context, in *GetTextRequest, opts ...grpc.CallOption) (*GetTextResponse, error)
+	UpdateText(ctx context.Context, in *UpdateTextRequest, opts ...grpc.CallOption) (*UpdateTextResponse, error)
+	DeleteText(ctx context.Context, in *UpdateTextRequest, opts ...grpc.CallOption) (*DeleteTextResponse, error)
 }
 
 type gophKeeperClient struct {
@@ -79,6 +87,42 @@ func (c *gophKeeperClient) DeletePassword(ctx context.Context, in *DeletePasswor
 	return out, nil
 }
 
+func (c *gophKeeperClient) AddText(ctx context.Context, in *AddTextRequest, opts ...grpc.CallOption) (*AddTextResponse, error) {
+	out := new(AddTextResponse)
+	err := c.cc.Invoke(ctx, GophKeeper_AddText_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *gophKeeperClient) GetText(ctx context.Context, in *GetTextRequest, opts ...grpc.CallOption) (*GetTextResponse, error) {
+	out := new(GetTextResponse)
+	err := c.cc.Invoke(ctx, GophKeeper_GetText_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *gophKeeperClient) UpdateText(ctx context.Context, in *UpdateTextRequest, opts ...grpc.CallOption) (*UpdateTextResponse, error) {
+	out := new(UpdateTextResponse)
+	err := c.cc.Invoke(ctx, GophKeeper_UpdateText_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *gophKeeperClient) DeleteText(ctx context.Context, in *UpdateTextRequest, opts ...grpc.CallOption) (*DeleteTextResponse, error) {
+	out := new(DeleteTextResponse)
+	err := c.cc.Invoke(ctx, GophKeeper_DeleteText_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // GophKeeperServer is the server API for GophKeeper service.
 // All implementations must embed UnimplementedGophKeeperServer
 // for forward compatibility
@@ -87,6 +131,10 @@ type GophKeeperServer interface {
 	GetPassword(context.Context, *GetPasswordRequest) (*GetPasswordResponse, error)
 	UpdatePassword(context.Context, *UpdatePasswordRequest) (*UpdatePasswordResponse, error)
 	DeletePassword(context.Context, *DeletePasswordRequest) (*DeletePasswordResponse, error)
+	AddText(context.Context, *AddTextRequest) (*AddTextResponse, error)
+	GetText(context.Context, *GetTextRequest) (*GetTextResponse, error)
+	UpdateText(context.Context, *UpdateTextRequest) (*UpdateTextResponse, error)
+	DeleteText(context.Context, *UpdateTextRequest) (*DeleteTextResponse, error)
 	mustEmbedUnimplementedGophKeeperServer()
 }
 
@@ -105,6 +153,18 @@ func (UnimplementedGophKeeperServer) UpdatePassword(context.Context, *UpdatePass
 }
 func (UnimplementedGophKeeperServer) DeletePassword(context.Context, *DeletePasswordRequest) (*DeletePasswordResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeletePassword not implemented")
+}
+func (UnimplementedGophKeeperServer) AddText(context.Context, *AddTextRequest) (*AddTextResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddText not implemented")
+}
+func (UnimplementedGophKeeperServer) GetText(context.Context, *GetTextRequest) (*GetTextResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetText not implemented")
+}
+func (UnimplementedGophKeeperServer) UpdateText(context.Context, *UpdateTextRequest) (*UpdateTextResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateText not implemented")
+}
+func (UnimplementedGophKeeperServer) DeleteText(context.Context, *UpdateTextRequest) (*DeleteTextResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteText not implemented")
 }
 func (UnimplementedGophKeeperServer) mustEmbedUnimplementedGophKeeperServer() {}
 
@@ -191,6 +251,78 @@ func _GophKeeper_DeletePassword_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _GophKeeper_AddText_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddTextRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GophKeeperServer).AddText(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GophKeeper_AddText_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GophKeeperServer).AddText(ctx, req.(*AddTextRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _GophKeeper_GetText_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetTextRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GophKeeperServer).GetText(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GophKeeper_GetText_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GophKeeperServer).GetText(ctx, req.(*GetTextRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _GophKeeper_UpdateText_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateTextRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GophKeeperServer).UpdateText(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GophKeeper_UpdateText_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GophKeeperServer).UpdateText(ctx, req.(*UpdateTextRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _GophKeeper_DeleteText_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateTextRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GophKeeperServer).DeleteText(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GophKeeper_DeleteText_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GophKeeperServer).DeleteText(ctx, req.(*UpdateTextRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // GophKeeper_ServiceDesc is the grpc.ServiceDesc for GophKeeper service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -213,6 +345,22 @@ var GophKeeper_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeletePassword",
 			Handler:    _GophKeeper_DeletePassword_Handler,
+		},
+		{
+			MethodName: "AddText",
+			Handler:    _GophKeeper_AddText_Handler,
+		},
+		{
+			MethodName: "GetText",
+			Handler:    _GophKeeper_GetText_Handler,
+		},
+		{
+			MethodName: "UpdateText",
+			Handler:    _GophKeeper_UpdateText_Handler,
+		},
+		{
+			MethodName: "DeleteText",
+			Handler:    _GophKeeper_DeleteText_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

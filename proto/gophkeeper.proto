@@ -23,21 +23,60 @@ message GetPasswordRequest {
 }
 
 message GetPasswordResponse {
-  Password password = 1;
+  repeated Password passwords = 1;
+  repeated uint32 ids = 2;
 }
 
 message UpdatePasswordRequest {
-  Password password = 1;
+  int32 id = 1;
+  Password password = 2;
 }
 
 message UpdatePasswordResponse {
 }
 
 message DeletePasswordRequest {
-  Password password = 1;
+  int32 id = 1;
 }
 
 message DeletePasswordResponse {
+}
+
+// Text
+message Text {
+  string title = 1;
+  string text = 2;
+}
+
+message AddTextRequest {
+  Text text = 1;
+}
+
+message AddTextResponse {
+}
+
+message GetTextRequest {
+  string title = 1;
+}
+
+message GetTextResponse {
+  repeated Text texts = 1;
+  repeated uint32 ids = 2;
+}
+
+message UpdateTextRequest {
+  uint32 id = 1;
+  Text text = 2;
+}
+
+message UpdateTextResponse {
+}
+
+message DeleteTextRequest {
+  uint32 id = 1;
+}
+
+message DeleteTextResponse {
 }
 
 service GophKeeper {
@@ -45,4 +84,9 @@ service GophKeeper {
   rpc GetPassword(GetPasswordRequest) returns (GetPasswordResponse);
   rpc UpdatePassword(UpdatePasswordRequest) returns (UpdatePasswordResponse);
   rpc DeletePassword(DeletePasswordRequest) returns (DeletePasswordResponse);
+
+  rpc AddText(AddTextRequest) returns (AddTextResponse);
+  rpc GetText(GetTextRequest) returns (GetTextResponse);
+  rpc UpdateText(UpdateTextRequest) returns (UpdateTextResponse);
+  rpc DeleteText(UpdateTextRequest) returns (DeleteTextResponse);
 }
