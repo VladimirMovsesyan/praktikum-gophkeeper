@@ -79,6 +79,83 @@ message DeleteTextRequest {
 message DeleteTextResponse {
 }
 
+// Binary file
+message Binary {
+  string title = 1;
+  bytes file = 2;
+}
+
+message AddBinaryRequest {
+  Binary binary = 1;
+}
+
+message AddBinaryResponse {
+}
+
+message GetBinaryRequest {
+  string title = 1;
+}
+
+message GetBinaryResponse {
+  repeated Binary binaries = 1;
+  repeated uint32 ids = 2;
+}
+
+message UpdateBinaryRequest {
+  uint32 id = 1;
+  Binary binary = 2;
+}
+
+message UpdateBinaryResponse {
+}
+
+message DeleteBinaryRequest {
+  uint32 id = 1;
+}
+
+message DeleteBinaryResponse {
+}
+
+// Payment
+message Payment {
+  string name = 1;
+  string cardholder = 2;
+  string number = 3;
+  string expDate = 4;
+  string code = 5;
+}
+
+message AddPaymentRequest {
+  Payment payment = 1;
+}
+
+message AddPaymentResponse {
+}
+
+message GetPaymentRequest {
+  string name = 1;
+}
+
+message GetPaymentResponse {
+  repeated Payment payments = 1;
+  repeated uint32 ids = 2;
+}
+
+message UpdatePaymentRequest {
+  uint32 id = 1;
+  Payment payment = 2;
+}
+
+message UpdatePaymentResponse {
+}
+
+message DeletePaymentRequest {
+  uint32 id = 1;
+}
+
+message DeletePaymentResponse {
+}
+
 service GophKeeper {
   rpc AddPassword(AddPasswordRequest) returns (AddPasswordResponse);
   rpc GetPassword(GetPasswordRequest) returns (GetPasswordResponse);
@@ -89,4 +166,14 @@ service GophKeeper {
   rpc GetText(GetTextRequest) returns (GetTextResponse);
   rpc UpdateText(UpdateTextRequest) returns (UpdateTextResponse);
   rpc DeleteText(DeleteTextRequest) returns (DeleteTextResponse);
+
+  rpc AddBinary(AddBinaryRequest) returns (AddBinaryResponse);
+  rpc GetBinary(GetBinaryRequest) returns (GetBinaryResponse);
+  rpc UpdateBinary(UpdateBinaryRequest) returns (UpdateBinaryResponse);
+  rpc DeleteBinary(DeleteBinaryRequest) returns (DeleteBinaryResponse);
+
+  rpc AddPayment(AddPaymentRequest) returns (AddPaymentResponse);
+  rpc GetPayment(GetPaymentRequest) returns (GetPaymentResponse);
+  rpc UpdatePayment(UpdatePaymentRequest) returns (UpdatePaymentResponse);
+  rpc DeletePayment(DeletePaymentRequest) returns (DeletePaymentResponse);
 }

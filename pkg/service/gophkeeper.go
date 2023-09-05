@@ -22,6 +22,16 @@ type repository interface {
 	GetText(user, title string) ([]*pb.Text, []uint32, error)
 	UpdateText(user string, id uint32, text *pb.Text) error
 	DeleteText(user string, id uint32) error
+
+	AddBinary(user string, binary *pb.Binary) error
+	GetBinary(user, title string) ([]*pb.Binary, []uint32, error)
+	UpdateBinary(user string, id uint32, binary *pb.Binary) error
+	DeleteBinary(user string, id uint32) error
+
+	AddPayment(user string, payment *pb.Payment) error
+	GetPayment(user, name string) ([]*pb.Payment, []uint32, error)
+	UpdatePayment(user string, id uint32, payment *pb.Payment) error
+	DeletePayment(user string, id uint32) error
 }
 
 type GophKeeperServer struct {
@@ -165,6 +175,140 @@ func (s *GophKeeperServer) DeleteText(ctx context.Context, in *pb.DeleteTextRequ
 	}
 
 	err := s.storage.DeleteText(login, in.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
+}
+
+func (s *GophKeeperServer) AddBinary(ctx context.Context, in *pb.AddBinaryRequest) (*pb.AddBinaryResponse, error) {
+	resp := &pb.AddBinaryResponse{}
+
+	login, ok := ctx.Value("login").(string)
+	if !ok {
+		return nil, status.Error(codes.Internal, "Login value doesn't found in context")
+	}
+
+	err := s.storage.AddBinary(login, in.Binary)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
+}
+
+func (s *GophKeeperServer) GetBinary(ctx context.Context, in *pb.GetBinaryRequest) (*pb.GetBinaryResponse, error) {
+	resp := &pb.GetBinaryResponse{}
+
+	login, ok := ctx.Value("login").(string)
+	if !ok {
+		return nil, status.Error(codes.Internal, "Login value doesn't found in context")
+	}
+
+	binaries, ids, err := s.storage.GetBinary(login, in.Title)
+	if err != nil {
+		return nil, err
+	}
+
+	resp.Binaries = binaries
+	resp.Ids = ids
+
+	return resp, nil
+}
+
+func (s *GophKeeperServer) UpdateBinary(ctx context.Context, in *pb.UpdateBinaryRequest) (*pb.UpdateBinaryResponse, error) {
+	resp := &pb.UpdateBinaryResponse{}
+
+	login, ok := ctx.Value("login").(string)
+	if !ok {
+		return nil, status.Error(codes.Internal, "Login value doesn't found in context")
+	}
+
+	err := s.storage.UpdateBinary(login, in.Id, in.Binary)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
+}
+
+func (s *GophKeeperServer) DeleteBinary(ctx context.Context, in *pb.DeleteBinaryRequest) (*pb.DeleteBinaryResponse, error) {
+	resp := &pb.DeleteBinaryResponse{}
+
+	login, ok := ctx.Value("login").(string)
+	if !ok {
+		return nil, status.Error(codes.Internal, "Login value doesn't found in context")
+	}
+
+	err := s.storage.DeleteBinary(login, in.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
+}
+
+func (s *GophKeeperServer) AddPayment(ctx context.Context, in *pb.AddPaymentRequest) (*pb.AddPaymentResponse, error) {
+	resp := &pb.AddPaymentResponse{}
+
+	login, ok := ctx.Value("login").(string)
+	if !ok {
+		return nil, status.Error(codes.Internal, "Login value doesn't found in context")
+	}
+
+	err := s.storage.AddPayment(login, in.Payment)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
+}
+
+func (s *GophKeeperServer) GetPayment(ctx context.Context, in *pb.GetPaymentRequest) (*pb.GetPaymentResponse, error) {
+	resp := &pb.GetPaymentResponse{}
+
+	login, ok := ctx.Value("login").(string)
+	if !ok {
+		return nil, status.Error(codes.Internal, "Login value doesn't found in context")
+	}
+
+	payments, ids, err := s.storage.GetPayment(login, in.Name)
+	if err != nil {
+		return nil, err
+	}
+
+	resp.Payments = payments
+	resp.Ids = ids
+
+	return resp, nil
+}
+
+func (s *GophKeeperServer) UpdatePayment(ctx context.Context, in *pb.UpdatePaymentRequest) (*pb.UpdatePaymentResponse, error) {
+	resp := &pb.UpdatePaymentResponse{}
+
+	login, ok := ctx.Value("login").(string)
+	if !ok {
+		return nil, status.Error(codes.Internal, "Login value doesn't found in context")
+	}
+
+	err := s.storage.UpdatePayment(login, in.Id, in.Payment)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
+}
+
+func (s *GophKeeperServer) DeletePayment(ctx context.Context, in *pb.DeletePaymentRequest) (*pb.DeletePaymentResponse, error) {
+	resp := &pb.DeletePaymentResponse{}
+
+	login, ok := ctx.Value("login").(string)
+	if !ok {
+		return nil, status.Error(codes.Internal, "Login value doesn't found in context")
+	}
+
+	err := s.storage.DeletePayment(login, in.Id)
 	if err != nil {
 		return nil, err
 	}

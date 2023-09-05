@@ -27,6 +27,14 @@ const (
 	GophKeeper_GetText_FullMethodName        = "/gophkeeper.GophKeeper/GetText"
 	GophKeeper_UpdateText_FullMethodName     = "/gophkeeper.GophKeeper/UpdateText"
 	GophKeeper_DeleteText_FullMethodName     = "/gophkeeper.GophKeeper/DeleteText"
+	GophKeeper_AddBinary_FullMethodName      = "/gophkeeper.GophKeeper/AddBinary"
+	GophKeeper_GetBinary_FullMethodName      = "/gophkeeper.GophKeeper/GetBinary"
+	GophKeeper_UpdateBinary_FullMethodName   = "/gophkeeper.GophKeeper/UpdateBinary"
+	GophKeeper_DeleteBinary_FullMethodName   = "/gophkeeper.GophKeeper/DeleteBinary"
+	GophKeeper_AddPayment_FullMethodName     = "/gophkeeper.GophKeeper/AddPayment"
+	GophKeeper_GetPayment_FullMethodName     = "/gophkeeper.GophKeeper/GetPayment"
+	GophKeeper_UpdatePayment_FullMethodName  = "/gophkeeper.GophKeeper/UpdatePayment"
+	GophKeeper_DeletePayment_FullMethodName  = "/gophkeeper.GophKeeper/DeletePayment"
 )
 
 // GophKeeperClient is the client API for GophKeeper service.
@@ -41,6 +49,14 @@ type GophKeeperClient interface {
 	GetText(ctx context.Context, in *GetTextRequest, opts ...grpc.CallOption) (*GetTextResponse, error)
 	UpdateText(ctx context.Context, in *UpdateTextRequest, opts ...grpc.CallOption) (*UpdateTextResponse, error)
 	DeleteText(ctx context.Context, in *DeleteTextRequest, opts ...grpc.CallOption) (*DeleteTextResponse, error)
+	AddBinary(ctx context.Context, in *AddBinaryRequest, opts ...grpc.CallOption) (*AddBinaryResponse, error)
+	GetBinary(ctx context.Context, in *GetBinaryRequest, opts ...grpc.CallOption) (*GetBinaryResponse, error)
+	UpdateBinary(ctx context.Context, in *UpdateBinaryRequest, opts ...grpc.CallOption) (*UpdateBinaryResponse, error)
+	DeleteBinary(ctx context.Context, in *DeleteBinaryRequest, opts ...grpc.CallOption) (*DeleteBinaryResponse, error)
+	AddPayment(ctx context.Context, in *AddPaymentRequest, opts ...grpc.CallOption) (*AddPaymentResponse, error)
+	GetPayment(ctx context.Context, in *GetPaymentRequest, opts ...grpc.CallOption) (*GetPaymentResponse, error)
+	UpdatePayment(ctx context.Context, in *UpdatePaymentRequest, opts ...grpc.CallOption) (*UpdatePaymentResponse, error)
+	DeletePayment(ctx context.Context, in *DeletePaymentRequest, opts ...grpc.CallOption) (*DeletePaymentResponse, error)
 }
 
 type gophKeeperClient struct {
@@ -123,6 +139,78 @@ func (c *gophKeeperClient) DeleteText(ctx context.Context, in *DeleteTextRequest
 	return out, nil
 }
 
+func (c *gophKeeperClient) AddBinary(ctx context.Context, in *AddBinaryRequest, opts ...grpc.CallOption) (*AddBinaryResponse, error) {
+	out := new(AddBinaryResponse)
+	err := c.cc.Invoke(ctx, GophKeeper_AddBinary_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *gophKeeperClient) GetBinary(ctx context.Context, in *GetBinaryRequest, opts ...grpc.CallOption) (*GetBinaryResponse, error) {
+	out := new(GetBinaryResponse)
+	err := c.cc.Invoke(ctx, GophKeeper_GetBinary_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *gophKeeperClient) UpdateBinary(ctx context.Context, in *UpdateBinaryRequest, opts ...grpc.CallOption) (*UpdateBinaryResponse, error) {
+	out := new(UpdateBinaryResponse)
+	err := c.cc.Invoke(ctx, GophKeeper_UpdateBinary_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *gophKeeperClient) DeleteBinary(ctx context.Context, in *DeleteBinaryRequest, opts ...grpc.CallOption) (*DeleteBinaryResponse, error) {
+	out := new(DeleteBinaryResponse)
+	err := c.cc.Invoke(ctx, GophKeeper_DeleteBinary_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *gophKeeperClient) AddPayment(ctx context.Context, in *AddPaymentRequest, opts ...grpc.CallOption) (*AddPaymentResponse, error) {
+	out := new(AddPaymentResponse)
+	err := c.cc.Invoke(ctx, GophKeeper_AddPayment_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *gophKeeperClient) GetPayment(ctx context.Context, in *GetPaymentRequest, opts ...grpc.CallOption) (*GetPaymentResponse, error) {
+	out := new(GetPaymentResponse)
+	err := c.cc.Invoke(ctx, GophKeeper_GetPayment_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *gophKeeperClient) UpdatePayment(ctx context.Context, in *UpdatePaymentRequest, opts ...grpc.CallOption) (*UpdatePaymentResponse, error) {
+	out := new(UpdatePaymentResponse)
+	err := c.cc.Invoke(ctx, GophKeeper_UpdatePayment_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *gophKeeperClient) DeletePayment(ctx context.Context, in *DeletePaymentRequest, opts ...grpc.CallOption) (*DeletePaymentResponse, error) {
+	out := new(DeletePaymentResponse)
+	err := c.cc.Invoke(ctx, GophKeeper_DeletePayment_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // GophKeeperServer is the server API for GophKeeper service.
 // All implementations must embed UnimplementedGophKeeperServer
 // for forward compatibility
@@ -135,6 +223,14 @@ type GophKeeperServer interface {
 	GetText(context.Context, *GetTextRequest) (*GetTextResponse, error)
 	UpdateText(context.Context, *UpdateTextRequest) (*UpdateTextResponse, error)
 	DeleteText(context.Context, *DeleteTextRequest) (*DeleteTextResponse, error)
+	AddBinary(context.Context, *AddBinaryRequest) (*AddBinaryResponse, error)
+	GetBinary(context.Context, *GetBinaryRequest) (*GetBinaryResponse, error)
+	UpdateBinary(context.Context, *UpdateBinaryRequest) (*UpdateBinaryResponse, error)
+	DeleteBinary(context.Context, *DeleteBinaryRequest) (*DeleteBinaryResponse, error)
+	AddPayment(context.Context, *AddPaymentRequest) (*AddPaymentResponse, error)
+	GetPayment(context.Context, *GetPaymentRequest) (*GetPaymentResponse, error)
+	UpdatePayment(context.Context, *UpdatePaymentRequest) (*UpdatePaymentResponse, error)
+	DeletePayment(context.Context, *DeletePaymentRequest) (*DeletePaymentResponse, error)
 	mustEmbedUnimplementedGophKeeperServer()
 }
 
@@ -165,6 +261,30 @@ func (UnimplementedGophKeeperServer) UpdateText(context.Context, *UpdateTextRequ
 }
 func (UnimplementedGophKeeperServer) DeleteText(context.Context, *DeleteTextRequest) (*DeleteTextResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteText not implemented")
+}
+func (UnimplementedGophKeeperServer) AddBinary(context.Context, *AddBinaryRequest) (*AddBinaryResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddBinary not implemented")
+}
+func (UnimplementedGophKeeperServer) GetBinary(context.Context, *GetBinaryRequest) (*GetBinaryResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetBinary not implemented")
+}
+func (UnimplementedGophKeeperServer) UpdateBinary(context.Context, *UpdateBinaryRequest) (*UpdateBinaryResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateBinary not implemented")
+}
+func (UnimplementedGophKeeperServer) DeleteBinary(context.Context, *DeleteBinaryRequest) (*DeleteBinaryResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteBinary not implemented")
+}
+func (UnimplementedGophKeeperServer) AddPayment(context.Context, *AddPaymentRequest) (*AddPaymentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddPayment not implemented")
+}
+func (UnimplementedGophKeeperServer) GetPayment(context.Context, *GetPaymentRequest) (*GetPaymentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPayment not implemented")
+}
+func (UnimplementedGophKeeperServer) UpdatePayment(context.Context, *UpdatePaymentRequest) (*UpdatePaymentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdatePayment not implemented")
+}
+func (UnimplementedGophKeeperServer) DeletePayment(context.Context, *DeletePaymentRequest) (*DeletePaymentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeletePayment not implemented")
 }
 func (UnimplementedGophKeeperServer) mustEmbedUnimplementedGophKeeperServer() {}
 
@@ -323,6 +443,150 @@ func _GophKeeper_DeleteText_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _GophKeeper_AddBinary_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddBinaryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GophKeeperServer).AddBinary(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GophKeeper_AddBinary_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GophKeeperServer).AddBinary(ctx, req.(*AddBinaryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _GophKeeper_GetBinary_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetBinaryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GophKeeperServer).GetBinary(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GophKeeper_GetBinary_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GophKeeperServer).GetBinary(ctx, req.(*GetBinaryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _GophKeeper_UpdateBinary_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateBinaryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GophKeeperServer).UpdateBinary(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GophKeeper_UpdateBinary_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GophKeeperServer).UpdateBinary(ctx, req.(*UpdateBinaryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _GophKeeper_DeleteBinary_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteBinaryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GophKeeperServer).DeleteBinary(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GophKeeper_DeleteBinary_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GophKeeperServer).DeleteBinary(ctx, req.(*DeleteBinaryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _GophKeeper_AddPayment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddPaymentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GophKeeperServer).AddPayment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GophKeeper_AddPayment_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GophKeeperServer).AddPayment(ctx, req.(*AddPaymentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _GophKeeper_GetPayment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetPaymentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GophKeeperServer).GetPayment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GophKeeper_GetPayment_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GophKeeperServer).GetPayment(ctx, req.(*GetPaymentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _GophKeeper_UpdatePayment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdatePaymentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GophKeeperServer).UpdatePayment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GophKeeper_UpdatePayment_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GophKeeperServer).UpdatePayment(ctx, req.(*UpdatePaymentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _GophKeeper_DeletePayment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeletePaymentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GophKeeperServer).DeletePayment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GophKeeper_DeletePayment_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GophKeeperServer).DeletePayment(ctx, req.(*DeletePaymentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // GophKeeper_ServiceDesc is the grpc.ServiceDesc for GophKeeper service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -361,6 +625,38 @@ var GophKeeper_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteText",
 			Handler:    _GophKeeper_DeleteText_Handler,
+		},
+		{
+			MethodName: "AddBinary",
+			Handler:    _GophKeeper_AddBinary_Handler,
+		},
+		{
+			MethodName: "GetBinary",
+			Handler:    _GophKeeper_GetBinary_Handler,
+		},
+		{
+			MethodName: "UpdateBinary",
+			Handler:    _GophKeeper_UpdateBinary_Handler,
+		},
+		{
+			MethodName: "DeleteBinary",
+			Handler:    _GophKeeper_DeleteBinary_Handler,
+		},
+		{
+			MethodName: "AddPayment",
+			Handler:    _GophKeeper_AddPayment_Handler,
+		},
+		{
+			MethodName: "GetPayment",
+			Handler:    _GophKeeper_GetPayment_Handler,
+		},
+		{
+			MethodName: "UpdatePayment",
+			Handler:    _GophKeeper_UpdatePayment_Handler,
+		},
+		{
+			MethodName: "DeletePayment",
+			Handler:    _GophKeeper_DeletePayment_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -22,6 +22,16 @@ type repository interface {
 	GetText(user, title string) ([]*pb.Text, []uint32, error)
 	UpdateText(user string, id uint32, text *pb.Text) error
 	DeleteText(user string, id uint32) error
+
+	AddBinary(user string, binary *pb.Binary) error
+	GetBinary(user, title string) ([]*pb.Binary, []uint32, error)
+	UpdateBinary(user string, id uint32, binary *pb.Binary) error
+	DeleteBinary(user string, id uint32) error
+
+	AddPayment(user string, payment *pb.Payment) error
+	GetPayment(user, name string) ([]*pb.Payment, []uint32, error)
+	UpdatePayment(user string, id uint32, payment *pb.Payment) error
+	DeletePayment(user string, id uint32) error
 }
 
 var _ repository = &PostgreStorage{}
@@ -68,6 +78,27 @@ const (
     created_at TIMESTAMP NOT NULL,
     FOREIGN KEY (owner) REFERENCES users (login)
 );`
+
+	binaryTable = `CREATE TABLE IF NOT EXISTS binaries (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(100) NOT NULL,
+    file bytea NOT NULL,
+    owner VARCHAR(100) NOT NULL,
+    created_at TIMESTAMP NOT NULL,
+    FOREIGN KEY (owner) REFERENCES users (login)
+);`
+
+	paymentTable = `CREATE TABLE IF NOT EXISTS payments (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    cardholder VARCHAR(100) NOT NULL,
+    number VARCHAR(100) NOT NULL,
+    exp_date VARCHAR(100) NOT NULL,
+    code VARCHAR(100) NOT NULL,
+    owner VARCHAR(100) NOT NULL,
+    created_at TIMESTAMP NOT NULL,
+    FOREIGN KEY (owner) REFERENCES users (login)
+);`
 )
 
 func (s *PostgreStorage) ensureTablesExist() error {
@@ -82,6 +113,16 @@ func (s *PostgreStorage) ensureTablesExist() error {
 	}
 
 	_, err = s.conn.Exec(context.Background(), textTable)
+	if err != nil {
+		return err
+	}
+
+	_, err = s.conn.Exec(context.Background(), binaryTable)
+	if err != nil {
+		return err
+	}
+
+	_, err = s.conn.Exec(context.Background(), paymentTable)
 	return err
 }
 
@@ -244,6 +285,160 @@ func (s *PostgreStorage) UpdateText(user string, id uint32, text *pb.Text) error
 
 func (s *PostgreStorage) DeleteText(user string, id uint32) error {
 	query := `DELETE FROM texts WHERE owner = $1 AND id = $2`
+
+	_, err := s.conn.Exec(
+		context.Background(),
+		query,
+		user,
+		id,
+	)
+
+	return err
+}
+
+func (s *PostgreStorage) AddBinary(user string, binary *pb.Binary) error {
+	query := `INSERT INTO binaries(title, file, owner, created_at) VALUES($1, $2, $3, $4)`
+
+	_, err := s.conn.Exec(
+		context.Background(),
+		query,
+		binary.Title,
+		binary.File,
+		user,
+		time.Now(),
+	)
+
+	return err
+}
+
+func (s *PostgreStorage) GetBinary(user, title string) ([]*pb.Binary, []uint32, error) {
+	query := `SELECT title, file, id FROM binaries WHERE owner = $1 AND title = $2`
+
+	rows, err := s.conn.Query(
+		context.Background(),
+		query,
+		user,
+		title,
+	)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var binaries []*pb.Binary
+	var ids []uint32
+
+	for rows.Next() {
+		binary := &pb.Binary{}
+		var id uint32
+		err := rows.Scan(&binary.Title, &binary.File, &id)
+		if err != nil {
+			return nil, nil, err
+		}
+
+		ids = append(ids, id)
+		binaries = append(binaries, binary)
+	}
+
+	return binaries, ids, nil
+}
+
+func (s *PostgreStorage) UpdateBinary(user string, id uint32, binary *pb.Binary) error {
+	query := `UPDATE binaries SET title = $1, file = $2 WHERE owner = $3 AND id = $4`
+
+	_, err := s.conn.Exec(
+		context.Background(),
+		query,
+		binary.Title,
+		binary.File,
+		user,
+		id,
+	)
+
+	return err
+}
+
+func (s *PostgreStorage) DeleteBinary(user string, id uint32) error {
+	query := `DELETE FROM binaries WHERE owner = $1 AND id = $2`
+
+	_, err := s.conn.Exec(
+		context.Background(),
+		query,
+		user,
+		id,
+	)
+
+	return err
+}
+
+func (s *PostgreStorage) AddPayment(user string, payment *pb.Payment) error {
+	query := `INSERT INTO payments(name, cardholder, number, exp_date, code, owner, created_at) VALUES($1, $2, $3, $4, $5, $6, $7)`
+
+	_, err := s.conn.Exec(
+		context.Background(),
+		query,
+		payment.Name,
+		payment.Cardholder,
+		payment.Number,
+		payment.ExpDate,
+		payment.Code,
+		user,
+		time.Now(),
+	)
+
+	return err
+}
+
+func (s *PostgreStorage) GetPayment(user, name string) ([]*pb.Payment, []uint32, error) {
+	query := `SELECT (name, cardholder, number, exp_date, code, id) FROM payments WHERE owner = $1 AND name = $2`
+
+	rows, err := s.conn.Query(
+		context.Background(),
+		query,
+		user,
+		name,
+	)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var payments []*pb.Payment
+	var ids []uint32
+
+	for rows.Next() {
+		payment := &pb.Payment{}
+		var id uint32
+		err := rows.Scan(&payment.Name, &payment.Cardholder, &payment.Number, &payment.ExpDate, &payment.Code, &id)
+		if err != nil {
+			return nil, nil, err
+		}
+
+		payments = append(payments, payment)
+		ids = append(ids, id)
+	}
+
+	return payments, ids, nil
+}
+
+func (s *PostgreStorage) UpdatePayment(user string, id uint32, payment *pb.Payment) error {
+	query := `UPDATE payments SET name = $1, cardholder = $2, number = $3, exp_date = $4, code = $5 WHERE owner = $6 AND id = $7`
+
+	_, err := s.conn.Exec(
+		context.Background(),
+		query,
+		payment.Name,
+		payment.Cardholder,
+		payment.Number,
+		payment.ExpDate,
+		payment.Code,
+		user,
+		id,
+	)
+
+	return err
+}
+
+func (s *PostgreStorage) DeletePayment(user string, id uint32) error {
+	query := `DELETE FROM payments WHERE owner = $1 AND id = $2`
 
 	_, err := s.conn.Exec(
 		context.Background(),
