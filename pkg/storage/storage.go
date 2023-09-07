@@ -143,7 +143,7 @@ func (s *PostgreStorage) AddPassword(user string, password *pb.Password) error {
 	return status.Error(codes.OK, "")
 }
 
-func (s *PostgreStorage) GetPassword(user, website string) ([]*pb.Password, []uint32, error) {
+func (s *PostgreStorage) GetPassword(user, website string) (passwords []*pb.Password, ids []uint32, err error) {
 	query := `SELECT website, login, password, id FROM passwords WHERE owner = $1 AND website = $2`
 
 	rows, err := s.conn.Query(context.Background(), query, user, website)
@@ -151,8 +151,6 @@ func (s *PostgreStorage) GetPassword(user, website string) ([]*pb.Password, []ui
 		return nil, nil, status.Error(codes.Internal, "Something went wrong while making request to database")
 	}
 
-	var passwords []*pb.Password
-	var ids []uint32
 	for rows.Next() {
 		pass := &pb.Password{}
 		var id uint32
@@ -215,16 +213,13 @@ func (s *PostgreStorage) AddText(user string, text *pb.Text) error {
 	return status.Error(codes.OK, "")
 }
 
-func (s *PostgreStorage) GetText(user, title string) ([]*pb.Text, []uint32, error) {
+func (s *PostgreStorage) GetText(user, title string) (texts []*pb.Text, ids []uint32, err error) {
 	query := `SELECT (title, text, id) FROM texts WHERE owner = $1 AND title = $2`
 
 	rows, err := s.conn.Query(context.Background(), query, user, title)
 	if err != nil {
 		return nil, nil, status.Error(codes.Internal, "Something went wrong while making request to database")
 	}
-
-	var texts []*pb.Text
-	var ids []uint32
 
 	for rows.Next() {
 		text := &pb.Text{}
@@ -284,7 +279,7 @@ func (s *PostgreStorage) AddBinary(user string, binary *pb.Binary) error {
 	return err
 }
 
-func (s *PostgreStorage) GetBinary(user, title string) ([]*pb.Binary, []uint32, error) {
+func (s *PostgreStorage) GetBinary(user, title string) (binaries []*pb.Binary, ids []uint32, err error) {
 	query := `SELECT title, file, id FROM binaries WHERE owner = $1 AND title = $2`
 
 	rows, err := s.conn.Query(
@@ -296,9 +291,6 @@ func (s *PostgreStorage) GetBinary(user, title string) ([]*pb.Binary, []uint32, 
 	if err != nil {
 		return nil, nil, err
 	}
-
-	var binaries []*pb.Binary
-	var ids []uint32
 
 	for rows.Next() {
 		binary := &pb.Binary{}
@@ -361,7 +353,7 @@ func (s *PostgreStorage) AddPayment(user string, payment *pb.Payment) error {
 	return err
 }
 
-func (s *PostgreStorage) GetPayment(user, name string) ([]*pb.Payment, []uint32, error) {
+func (s *PostgreStorage) GetPayment(user, name string) (payments []*pb.Payment, ids []uint32, err error) {
 	query := `SELECT (name, cardholder, number, exp_date, code, id) FROM payments WHERE owner = $1 AND name = $2`
 
 	rows, err := s.conn.Query(
@@ -373,9 +365,6 @@ func (s *PostgreStorage) GetPayment(user, name string) ([]*pb.Payment, []uint32,
 	if err != nil {
 		return nil, nil, err
 	}
-
-	var payments []*pb.Payment
-	var ids []uint32
 
 	for rows.Next() {
 		payment := &pb.Payment{}
