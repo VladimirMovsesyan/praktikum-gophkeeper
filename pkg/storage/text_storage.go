@@ -3,8 +3,6 @@ package storage
 import (
 	"context"
 	"github.com/jackc/pgx/v5"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 	pb "praktikum-gophkeeper/proto"
 	"time"
 )
@@ -54,11 +52,8 @@ func (s *textStorage) Add(user string, text *pb.Text) error {
 		user,
 		time.Now(),
 	)
-	if err != nil {
-		return status.Error(codes.Internal, "Couldn't store text to database")
-	}
 
-	return status.Error(codes.OK, "")
+	return err
 }
 
 func (s *textStorage) Get(user, title string) (texts []*pb.Text, ids []uint32, err error) {
@@ -66,7 +61,7 @@ func (s *textStorage) Get(user, title string) (texts []*pb.Text, ids []uint32, e
 
 	rows, err := s.conn.Query(context.Background(), query, user, title)
 	if err != nil {
-		return nil, nil, status.Error(codes.Internal, "Something went wrong while making request to database")
+		return nil, nil, err
 	}
 
 	for rows.Next() {
@@ -74,7 +69,7 @@ func (s *textStorage) Get(user, title string) (texts []*pb.Text, ids []uint32, e
 		var id uint32
 		err := rows.Scan(&text.Title, &text.Text, &id)
 		if err != nil {
-			return nil, nil, status.Error(codes.Internal, "Something went wrong while scanning values from database")
+			return nil, nil, err
 		}
 
 		texts = append(texts, text)

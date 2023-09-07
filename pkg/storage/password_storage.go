@@ -3,8 +3,6 @@ package storage
 import (
 	"context"
 	"github.com/jackc/pgx/v5"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 	pb "praktikum-gophkeeper/proto"
 	"time"
 )
@@ -56,11 +54,8 @@ func (s *passwordStorage) Add(user string, password *pb.Password) error {
 		user,
 		time.Now(),
 	)
-	if err != nil {
-		return status.Error(codes.Internal, "Couldn't store password to database")
-	}
 
-	return status.Error(codes.OK, "")
+	return err
 }
 
 func (s *passwordStorage) Get(user, website string) (passwords []*pb.Password, ids []uint32, err error) {
@@ -68,7 +63,7 @@ func (s *passwordStorage) Get(user, website string) (passwords []*pb.Password, i
 
 	rows, err := s.conn.Query(context.Background(), query, user, website)
 	if err != nil {
-		return nil, nil, status.Error(codes.Internal, "Something went wrong while making request to database")
+		return nil, nil, err
 	}
 
 	for rows.Next() {
@@ -76,7 +71,7 @@ func (s *passwordStorage) Get(user, website string) (passwords []*pb.Password, i
 		var id uint32
 		err := rows.Scan(&pass.Website, &pass.Login, &pass.Password, &id)
 		if err != nil {
-			return nil, nil, status.Error(codes.Internal, "Something went wrong while scanning values from database")
+			return nil, nil, err
 		}
 
 		passwords = append(passwords, pass)

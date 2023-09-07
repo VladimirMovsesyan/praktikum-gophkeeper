@@ -3,8 +3,6 @@ package storage
 import (
 	"context"
 	"github.com/jackc/pgx/v5"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 	pb "praktikum-gophkeeper/proto"
 	"time"
 )
@@ -43,11 +41,7 @@ func (s *userStorage) Add(user *pb.User) error {
 	query := `INSERT INTO users VALUES($1, $2, $3)`
 
 	_, err := s.conn.Exec(context.Background(), query, user.Login, user.Password, time.Now())
-	if err != nil {
-		return status.Errorf(codes.AlreadyExists, `User with login "%s" already exist`, user.Login)
-	}
-
-	return status.Error(codes.OK, "")
+	return err
 }
 
 func (s *userStorage) Get(login string) (*pb.User, error) {
@@ -58,8 +52,8 @@ func (s *userStorage) Get(login string) (*pb.User, error) {
 	user := &pb.User{}
 	err := row.Scan(&user.Login, &user.Password)
 	if err != nil {
-		return nil, status.Errorf(codes.NotFound, `User with login %s doesn't exist`, login)
+		return nil, err
 	}
 
-	return user, status.Error(codes.OK, "")
+	return user, nil
 }
