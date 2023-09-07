@@ -9,43 +9,69 @@ import (
 	pb "praktikum-gophkeeper/proto"
 )
 
-type repository interface {
-	AddUser(user *pb.User) error
-	GetUser(login string) (*pb.User, error)
+type passwordRepository interface {
+	Add(user string, password *pb.Password) error
+	Get(user, website string) (passwords []*pb.Password, ids []uint32, err error)
+	Update(user string, id int32, password *pb.Password) error
+	Delete(user string, id int32) error
+}
 
-	AddPassword(user string, password *pb.Password) error
-	GetPassword(user, website string) ([]*pb.Password, []uint32, error)
-	UpdatePassword(user string, id int32, password *pb.Password) error
-	DeletePassword(user string, id int32) error
+type textRepository interface {
+	Add(user string, text *pb.Text) error
+	Get(user, title string) (texts []*pb.Text, ids []uint32, err error)
+	Update(user string, id uint32, text *pb.Text) error
+	Delete(user string, id uint32) error
+}
 
-	AddText(user string, text *pb.Text) error
-	GetText(user, title string) ([]*pb.Text, []uint32, error)
-	UpdateText(user string, id uint32, text *pb.Text) error
-	DeleteText(user string, id uint32) error
+type binaryRepository interface {
+	Add(user string, binary *pb.Binary) error
+	Get(user, title string) (binaries []*pb.Binary, ids []uint32, err error)
+	Update(user string, id uint32, binary *pb.Binary) error
+	Delete(user string, id uint32) error
+}
 
-	AddBinary(user string, binary *pb.Binary) error
-	GetBinary(user, title string) ([]*pb.Binary, []uint32, error)
-	UpdateBinary(user string, id uint32, binary *pb.Binary) error
-	DeleteBinary(user string, id uint32) error
-
-	AddPayment(user string, payment *pb.Payment) error
-	GetPayment(user, name string) ([]*pb.Payment, []uint32, error)
-	UpdatePayment(user string, id uint32, payment *pb.Payment) error
-	DeletePayment(user string, id uint32) error
+type paymentRepository interface {
+	Add(user string, payment *pb.Payment) error
+	Get(user, name string) (payments []*pb.Payment, ids []uint32, err error)
+	Update(user string, id uint32, payment *pb.Payment) error
+	Delete(user string, id uint32) error
 }
 
 type GophKeeperServer struct {
 	pb.UnimplementedGophKeeperServer
-	storage repository
+	password passwordRepository
+	text     textRepository
+	binary   binaryRepository
+	payment  paymentRepository
 }
 
 func NewGophKeeperServer(conn *pgx.Conn) (*GophKeeperServer, error) {
-	s, err := storage.NewStorage(conn)
+	pass, err := storage.NewPasswordStorage(conn)
 	if err != nil {
 		return nil, err
 	}
 
-	return &GophKeeperServer{storage: s}, nil
+	text, err := storage.NewTextStorage(conn)
+	if err != nil {
+		return nil, err
+	}
+
+	binary, err := storage.NewBinaryStorage(conn)
+	if err != nil {
+		return nil, err
+	}
+
+	payment, err := storage.NewPaymentStorage(conn)
+	if err != nil {
+		return nil, err
+	}
+
+	return &GophKeeperServer{
+		password: pass,
+		text:     text,
+		binary:   binary,
+		payment:  payment,
+	}, nil
 }
 
 func (s *GophKeeperServer) AddPassword(ctx context.Context, in *pb.AddPasswordRequest) (*pb.AddPasswordResponse, error) {
@@ -56,7 +82,7 @@ func (s *GophKeeperServer) AddPassword(ctx context.Context, in *pb.AddPasswordRe
 		return nil, status.Error(codes.Internal, "Login value doesn't found in context")
 	}
 
-	err := s.storage.AddPassword(login, in.Password)
+	err := s.password.Add(login, in.Password)
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +98,7 @@ func (s *GophKeeperServer) GetPassword(ctx context.Context, in *pb.GetPasswordRe
 		return nil, status.Error(codes.Internal, "Login value doesn't found in context")
 	}
 
-	passwords, ids, err := s.storage.GetPassword(login, in.Website)
+	passwords, ids, err := s.password.Get(login, in.Website)
 	if err != nil {
 		return nil, err
 	}
@@ -91,7 +117,7 @@ func (s *GophKeeperServer) UpdatePassword(ctx context.Context, in *pb.UpdatePass
 		return nil, status.Error(codes.Internal, "Login value doesn't found in context")
 	}
 
-	err := s.storage.UpdatePassword(login, in.Id, in.Password)
+	err := s.password.Update(login, in.Id, in.Password)
 	if err != nil {
 		return nil, status.Error(codes.Internal, "Couldn't update password in database")
 	}
@@ -107,7 +133,7 @@ func (s *GophKeeperServer) DeletePassword(ctx context.Context, in *pb.DeletePass
 		return nil, status.Error(codes.Internal, "Login value doesn't found in context")
 	}
 
-	err := s.storage.DeletePassword(login, in.Id)
+	err := s.password.Delete(login, in.Id)
 	if err != nil {
 		return nil, status.Error(codes.Internal, "Couldn't delete password from database")
 	}
@@ -123,7 +149,7 @@ func (s *GophKeeperServer) AddText(ctx context.Context, in *pb.AddTextRequest) (
 		return nil, status.Error(codes.Internal, "Login value doesn't found in context")
 	}
 
-	err := s.storage.AddText(login, in.Text)
+	err := s.text.Add(login, in.Text)
 	if err != nil {
 		return nil, err
 	}
@@ -139,7 +165,7 @@ func (s *GophKeeperServer) GetText(ctx context.Context, in *pb.GetTextRequest) (
 		return nil, status.Error(codes.Internal, "Login value doesn't found in context")
 	}
 
-	texts, ids, err := s.storage.GetText(login, in.Title)
+	texts, ids, err := s.text.Get(login, in.Title)
 	if err != nil {
 		return nil, err
 	}
@@ -158,7 +184,7 @@ func (s *GophKeeperServer) UpdateText(ctx context.Context, in *pb.UpdateTextRequ
 		return nil, status.Error(codes.Internal, "Login value doesn't found in context")
 	}
 
-	err := s.storage.UpdateText(login, in.Id, in.Text)
+	err := s.text.Update(login, in.Id, in.Text)
 	if err != nil {
 		return nil, err
 	}
@@ -174,7 +200,7 @@ func (s *GophKeeperServer) DeleteText(ctx context.Context, in *pb.DeleteTextRequ
 		return nil, status.Error(codes.Internal, "Login value doesn't found in context")
 	}
 
-	err := s.storage.DeleteText(login, in.Id)
+	err := s.text.Delete(login, in.Id)
 	if err != nil {
 		return nil, err
 	}
@@ -190,7 +216,7 @@ func (s *GophKeeperServer) AddBinary(ctx context.Context, in *pb.AddBinaryReques
 		return nil, status.Error(codes.Internal, "Login value doesn't found in context")
 	}
 
-	err := s.storage.AddBinary(login, in.Binary)
+	err := s.binary.Add(login, in.Binary)
 	if err != nil {
 		return nil, err
 	}
@@ -206,7 +232,7 @@ func (s *GophKeeperServer) GetBinary(ctx context.Context, in *pb.GetBinaryReques
 		return nil, status.Error(codes.Internal, "Login value doesn't found in context")
 	}
 
-	binaries, ids, err := s.storage.GetBinary(login, in.Title)
+	binaries, ids, err := s.binary.Get(login, in.Title)
 	if err != nil {
 		return nil, err
 	}
@@ -225,7 +251,7 @@ func (s *GophKeeperServer) UpdateBinary(ctx context.Context, in *pb.UpdateBinary
 		return nil, status.Error(codes.Internal, "Login value doesn't found in context")
 	}
 
-	err := s.storage.UpdateBinary(login, in.Id, in.Binary)
+	err := s.binary.Update(login, in.Id, in.Binary)
 	if err != nil {
 		return nil, err
 	}
@@ -241,7 +267,7 @@ func (s *GophKeeperServer) DeleteBinary(ctx context.Context, in *pb.DeleteBinary
 		return nil, status.Error(codes.Internal, "Login value doesn't found in context")
 	}
 
-	err := s.storage.DeleteBinary(login, in.Id)
+	err := s.binary.Delete(login, in.Id)
 	if err != nil {
 		return nil, err
 	}
@@ -257,7 +283,7 @@ func (s *GophKeeperServer) AddPayment(ctx context.Context, in *pb.AddPaymentRequ
 		return nil, status.Error(codes.Internal, "Login value doesn't found in context")
 	}
 
-	err := s.storage.AddPayment(login, in.Payment)
+	err := s.payment.Add(login, in.Payment)
 	if err != nil {
 		return nil, err
 	}
@@ -273,7 +299,7 @@ func (s *GophKeeperServer) GetPayment(ctx context.Context, in *pb.GetPaymentRequ
 		return nil, status.Error(codes.Internal, "Login value doesn't found in context")
 	}
 
-	payments, ids, err := s.storage.GetPayment(login, in.Name)
+	payments, ids, err := s.payment.Get(login, in.Name)
 	if err != nil {
 		return nil, err
 	}
@@ -292,7 +318,7 @@ func (s *GophKeeperServer) UpdatePayment(ctx context.Context, in *pb.UpdatePayme
 		return nil, status.Error(codes.Internal, "Login value doesn't found in context")
 	}
 
-	err := s.storage.UpdatePayment(login, in.Id, in.Payment)
+	err := s.payment.Update(login, in.Id, in.Payment)
 	if err != nil {
 		return nil, err
 	}
@@ -308,7 +334,7 @@ func (s *GophKeeperServer) DeletePayment(ctx context.Context, in *pb.DeletePayme
 		return nil, status.Error(codes.Internal, "Login value doesn't found in context")
 	}
 
-	err := s.storage.DeletePayment(login, in.Id)
+	err := s.payment.Delete(login, in.Id)
 	if err != nil {
 		return nil, err
 	}

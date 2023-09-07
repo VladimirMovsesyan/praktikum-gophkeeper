@@ -10,28 +10,33 @@ import (
 	pb "praktikum-gophkeeper/proto"
 )
 
+type userRepository interface {
+	Add(user *pb.User) error
+	Get(login string) (*pb.User, error)
+}
+
 type AuthServer struct {
 	pb.UnimplementedAuthorizationServer
-	storage repository
+	user userRepository
 }
 
 func NewAuthServer(conn *pgx.Conn) (*AuthServer, error) {
-	s, err := storage.NewStorage(conn)
+	s, err := storage.NewUserStorage(conn)
 	if err != nil {
 		return nil, err
 	}
 
-	return &AuthServer{storage: s}, nil
+	return &AuthServer{user: s}, nil
 }
 
 func (s *AuthServer) RegisterUser(ctx context.Context, in *pb.RegisterUserRequest) (*pb.RegisterUserResponse, error) {
 	resp := &pb.RegisterUserResponse{}
 
-	if _, err := s.storage.GetUser(in.User.Login); err == nil {
+	if _, err := s.user.Get(in.User.Login); err == nil {
 		return nil, status.Errorf(codes.AlreadyExists, `User with login "%s" already exist`, in.User.Login)
 	}
 
-	err := s.storage.AddUser(in.User)
+	err := s.user.Add(in.User)
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +54,7 @@ func (s *AuthServer) RegisterUser(ctx context.Context, in *pb.RegisterUserReques
 func (s *AuthServer) LoginUser(ctx context.Context, in *pb.LoginUserRequest) (*pb.LoginUserResponse, error) {
 	resp := &pb.LoginUserResponse{}
 
-	if user, err := s.storage.GetUser(in.User.Login); err != nil {
+	if user, err := s.user.Get(in.User.Login); err != nil {
 		return nil, err
 	} else if in.User.Password != user.Password {
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid login or password.")
