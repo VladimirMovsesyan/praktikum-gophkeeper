@@ -11,12 +11,18 @@ import (
 )
 
 var (
-	flAddress = flag.String("a", ":8080", "Server's address.") // RUN_ADDRESS
-	flDSN     = flag.String("d", "", "Server's URI.")          // DSN
+	buildVersion = "N/A"
+	buildDate    = "N/A"
+	buildCommit  = "N/A"
+	flAddress    = flag.String("a", ":8080", "Server's address.") // RUN_ADDRESS
+	flDSN        = flag.String("d", "", "Server's URI.")          // DSN
 )
 
 func main() {
 	flag.Parse()
+	log.Println("Build version:", buildVersion)
+	log.Println("Build date:", buildDate)
+	log.Println("Build commit:", buildCommit)
 
 	config, err := configuration.NewServer(flAddress, flDSN)
 	if err != nil {

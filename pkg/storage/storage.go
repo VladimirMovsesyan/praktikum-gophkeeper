@@ -9,33 +9,6 @@ import (
 	"time"
 )
 
-type repository interface {
-	AddUser(user *pb.User) error
-	GetUser(login string) (*pb.User, error)
-
-	AddPassword(user string, password *pb.Password) error
-	GetPassword(user, website string) ([]*pb.Password, []uint32, error)
-	UpdatePassword(user string, id int32, password *pb.Password) error
-	DeletePassword(user string, id int32) error
-
-	AddText(user string, text *pb.Text) error
-	GetText(user, title string) ([]*pb.Text, []uint32, error)
-	UpdateText(user string, id uint32, text *pb.Text) error
-	DeleteText(user string, id uint32) error
-
-	AddBinary(user string, binary *pb.Binary) error
-	GetBinary(user, title string) ([]*pb.Binary, []uint32, error)
-	UpdateBinary(user string, id uint32, binary *pb.Binary) error
-	DeleteBinary(user string, id uint32) error
-
-	AddPayment(user string, payment *pb.Payment) error
-	GetPayment(user, name string) ([]*pb.Payment, []uint32, error)
-	UpdatePayment(user string, id uint32, payment *pb.Payment) error
-	DeletePayment(user string, id uint32) error
-}
-
-var _ repository = &PostgreStorage{}
-
 type PostgreStorage struct {
 	conn *pgx.Conn
 }
